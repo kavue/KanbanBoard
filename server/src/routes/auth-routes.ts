@@ -24,18 +24,19 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ message: 'Invalid username or password' });
     }
 
-    // Generate a JWT token
-    const token = jwt.sign(
-      { userId: user.id }, // Use the user ID for the payload
-      process.env.JWT_SECRET_KEY as string, // JWT secret key
-      { expiresIn: '1h' } // Set expiration (e.g., 1 hour)
-    );
+    const secretKey = process.env.JWT_SECRET_KEY;
+    if (!secretKey) {
+      return res.status(500).json({ message: 'Server error: Missing JWT secret key' });
+    }
 
-    // Send the token in the response
-    return res.status(200).json({ token });
+    // Generate a JWT token
+    const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
+
+    // Return the token to the client
+    return res.json({ token });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: 'Server error' });
+    console.error('Error during login:', error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
 

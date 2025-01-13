@@ -7,31 +7,27 @@ interface JwtPayload {
 
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
   // TODO: verify the token exists and add the user data to the request object
-  const authHeader = req.headers.authorization;
+  // Check if the Authorization header exists
+  const authHeader = req.headers.authorization; 
 
-  if (!authHeader) {
-    res.status(401).json({ message: 'Authorization header missing' });
-    return; // Ensure the function exits after sending a response
-  }
+  if (authHeader) {
+    const token = authHeader.split(' ')[1]; // Extract the token from "Bearer <token>"
 
-  const token = authHeader.split(' ')[1];
-  const secretKey = process.env.JWT_SECRET_KEY;
-
-  if (!secretKey) {
-    res.status(500).json({ message: 'Server configuration error: JWT_SECRET_KEY not set' });
-    return; // Ensure the function exits after sending a response
-  }
-
-  jwt.verify(token, secretKey, (err, decoded) => {
-    if (err) {
-      res.status(403).json({ message: 'Invalid or expired token' });
-      return; // Ensure the function exits after sending a response
+    const secretKey = process.env.JWT_SECRET_KEY;
+    if (!secretKey) {
+      throw new Error('JWT_SECRET_KEY is not defined');
     }
-
-    // Add the user data to the request object
-    req.user = decoded as JwtPayload;
-
-    // Call the next middleware
-    next();
-  });
+    
+    // Verify the token using jwt.verify()
+    jwt.verify(token, secretKey, (err, user) => {
+      if (err) {
+        return res.status(403).json({ message: 'Invalid or expired token' });
+      }
+      // Attach the user to the request object
+      req.user = user as JwtPayload;
+      return next();
+    })
+  } else {
+    res.status(401).json({ message: 'Authorization header missing' });
+  }
 };
