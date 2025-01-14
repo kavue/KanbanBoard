@@ -5,7 +5,7 @@
 ## Description
 This Kanban board application provides a secure and user-friendly platform for managing tasks and workflows. It features a secure login page using JSON Web Tokens (JWT) to authenticate users and ensure secure access. Key functionalities include login authentication, session management, and ticket organization.
 
-**[View the deployed application here]()**
+**[View the deployed application here](https://kanbanboard-u6kp.onrender.com)**
 
 <img src="./client/src/assets/images/loginPage.png">
 
