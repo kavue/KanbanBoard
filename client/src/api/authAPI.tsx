@@ -4,14 +4,14 @@ const login = async (userInfo: UserLogin) => {
   // TODO: make a POST request to the login route
   try {
     // Make a POST request to the login route
-    const response = await fetch('auth/login', {
+    const response = await fetch('/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(userInfo), // Send user credentials as JSON
     });
-
+    console.log(response);
     // If the response is not ok, throw an error
     if (!response.ok) {
       throw new Error('Failed to login');
@@ -19,10 +19,6 @@ const login = async (userInfo: UserLogin) => {
 
     // Parse the JSON response
     const data = await response.json();
-
-    if (!data.ok) {
-      throw new Error(data.message || 'Login failed');
-    }
 
     // Return the data upon successful login
     return data;
