@@ -58,8 +58,6 @@ class AuthService {
     try {
       console.log(idToken);
       localStorage.setItem('id_token', idToken);
-      // const userInfo = JSON.stringify(jwtDecode<UserData>(idToken));
-      // localStorage.setItem('user_info', userInfo);
       // Redirect to the homepage after login
       window.location.href = '/';
     } catch (err) {
